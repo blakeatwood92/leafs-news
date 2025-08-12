@@ -34,11 +34,63 @@ interface SocialData {
 
 async function getSocialFeed(): Promise<SocialData> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/api/social`, {
-      next: { revalidate: 300 }, // Cache for 5 minutes
-    })
-    if (!res.ok) throw new Error("Failed to fetch social feed")
-    return await res.json()
+    // In production, you would fetch from Twitter API with proper authentication
+    const sampleTweets: Tweet[] = [
+      {
+        id: "1",
+        text: "What a game! The Leafs are looking strong this season. Matthews with another beauty! #LeafsForever #GoLeafsGo",
+        author: {
+          username: "leafsfan2024",
+          name: "Toronto Sports Fan",
+          profile_image_url: "/hockey-fan-avatar.png",
+          verified: false,
+        },
+        created_at: new Date(Date.now() - 1800000).toISOString(), // 30 minutes ago
+        public_metrics: {
+          retweet_count: 45,
+          like_count: 234,
+          reply_count: 12,
+        },
+      },
+      {
+        id: "2",
+        text: "Marner's playmaking ability is just incredible. That pass to Nylander was pure magic! 🍁 #LeafsNation",
+        author: {
+          username: "hockeyanalyst",
+          name: "Hockey Reporter",
+          profile_image_url: "/hockey-reporter-avatar.png",
+          verified: true,
+        },
+        created_at: new Date(Date.now() - 3600000).toISOString(), // 1 hour ago
+        public_metrics: {
+          retweet_count: 89,
+          like_count: 456,
+          reply_count: 23,
+        },
+      },
+      {
+        id: "3",
+        text: "The energy at Scotiabank Arena tonight was electric! Nothing beats playoff hockey in Toronto! #TMLtalk",
+        author: {
+          username: "arenaexperience",
+          name: "Game Night Fan",
+          profile_image_url: "/generic-sports-logo.png",
+          verified: false,
+        },
+        created_at: new Date(Date.now() - 7200000).toISOString(), // 2 hours ago
+        public_metrics: {
+          retweet_count: 23,
+          like_count: 167,
+          reply_count: 8,
+        },
+      },
+    ]
+
+    return {
+      tweets: sampleTweets,
+      count: sampleTweets.length,
+      lastUpdated: new Date().toISOString(),
+    }
   } catch (error) {
     console.error("Failed to fetch social feed:", error)
     return {

@@ -40,11 +40,70 @@ interface RosterData {
 
 async function getRoster(): Promise<RosterData> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/api/roster`, {
-      next: { revalidate: 3600 }, // Cache for 1 hour
-    })
-    if (!res.ok) throw new Error("Failed to fetch roster")
-    return await res.json()
+    const response = await fetch("https://api-web.nhle.com/v1/roster/TOR/current")
+    if (!response.ok) throw new Error("Failed to fetch from NHL API")
+
+    const data = await response.json()
+
+    // Process the NHL API data
+    const forwards =
+      data.forwards?.map((player: any) => ({
+        id: player.id,
+        headshot: `https://assets.nhle.com/mugs/nhl/20242025/${player.id}.png`,
+        firstName: { default: player.firstName.default },
+        lastName: { default: player.lastName.default },
+        sweaterNumber: player.sweaterNumber,
+        positionCode: player.positionCode,
+        shootsCatches: player.shootsCatches,
+        heightInInches: player.heightInInches,
+        weightInPounds: player.weightInPounds,
+        birthDate: player.birthDate,
+        birthCity: { default: player.birthCity.default },
+        birthCountry: player.birthCountry,
+        birthStateProvince: player.birthStateProvince,
+      })) || []
+
+    const defensemen =
+      data.defensemen?.map((player: any) => ({
+        id: player.id,
+        headshot: `https://assets.nhle.com/mugs/nhl/20242025/${player.id}.png`,
+        firstName: { default: player.firstName.default },
+        lastName: { default: player.lastName.default },
+        sweaterNumber: player.sweaterNumber,
+        positionCode: player.positionCode,
+        shootsCatches: player.shootsCatches,
+        heightInInches: player.heightInInches,
+        weightInPounds: player.weightInPounds,
+        birthDate: player.birthDate,
+        birthCity: { default: player.birthCity.default },
+        birthCountry: player.birthCountry,
+        birthStateProvince: player.birthStateProvince,
+      })) || []
+
+    const goalies =
+      data.goalies?.map((player: any) => ({
+        id: player.id,
+        headshot: `https://assets.nhle.com/mugs/nhl/20242025/${player.id}.png`,
+        firstName: { default: player.firstName.default },
+        lastName: { default: player.lastName.default },
+        sweaterNumber: player.sweaterNumber,
+        positionCode: player.positionCode,
+        shootsCatches: player.shootsCatches,
+        heightInInches: player.heightInInches,
+        weightInPounds: player.weightInPounds,
+        birthDate: player.birthDate,
+        birthCity: { default: player.birthCity.default },
+        birthCountry: player.birthCountry,
+        birthStateProvince: player.birthStateProvince,
+      })) || []
+
+    return {
+      forwards,
+      defensemen,
+      goalies,
+      totalPlayers: forwards.length + defensemen.length + goalies.length,
+      lastUpdated: new Date().toISOString(),
+    }
   } catch (error) {
     console.error("Failed to fetch roster:", error)
     return {
