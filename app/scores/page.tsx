@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Link } from "next/link"
+import Link from "next/link"
 import { Clock } from "lucide-react"
 import type { Game } from "@/types/game"
 
@@ -93,7 +93,7 @@ function GameCard({ game, type }: { game: Game; type: "current" | "recent" | "up
           <div className="text-center">
             {isLive && game.clock && (
               <div className="text-sm font-medium">
-                P{game.period} - {game.clock.timeRemaining}
+                P{game.clock.period} - {game.clock.timeRemaining}
               </div>
             )}
             {type === "upcoming" && (
